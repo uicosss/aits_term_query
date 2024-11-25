@@ -1,0 +1,30 @@
+{
+    "name": "uicosss/aits_term_query",
+    "description": "PHP Wrapper API for the AITS Term Query API",
+    "type": "library",
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.5.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Uicosss\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Daniel Paz-Horta",
+            "email": "dpaz@uic.edu",
+            "homepage": "https://osss.uic.edu/"
+        },
+        {
+            "name": "Jeremy Jones",
+            "email": "jkjones3@uic.edu",
+            "homepage": "https://osss.uic.edu/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
