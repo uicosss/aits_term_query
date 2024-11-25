@@ -43,8 +43,11 @@ class TermQuery
      * @var null|String
      */
     protected $campus = null;
-    
-    protected $json = [];
+
+    /**
+     * @var \stdClass
+     */
+    protected $json;
     
     protected $raw = '';
 
@@ -123,20 +126,20 @@ class TermQuery
 
             $this->httpCode = $response->getStatusCode();
             $this->raw = $response->getBody();
-            $this->json = json_decode($response->getBody(), true);
+            $this->json = json_decode($response->getBody(), false);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('AITS API response was not valid JSON');
             }
 
-            if (!isset($this->json['list'])) {
+            if (!isset($this->json->list)) {
                 throw new Exception('AITS API did not provide a proper response');
             }
 
-            if (!empty($this->json['list'][0]['queryPeriod']) || !empty($this->json['list'][0]['queryCampus']) || !empty($this->json['list'][0]['queryTermCode'])) {
-                $this->terms = $this->json['list'][0]['term'] ?? [];
+            if (!empty($this->json->list[0]->queryPeriod) || !empty($this->json->list[0]->queryCampus) || !empty($this->json->list[0]->queryTermCode)) {
+                $this->terms = $this->json->list[0]->term ?? [];
             } else {
-                $this->terms = $this->json['list'] ?? [];
+                $this->terms = $this->json->list ?? [];
             }
 
             if (count($this->terms) == 0) {
@@ -147,12 +150,12 @@ class TermQuery
 
             // Each list element contains a term, parse through it to create high level data
             foreach ($this->terms as $term) {
-                $this->termsContained[] = $term['termCode'];
-                if (!in_array($term['academicYear']['code'], $this->academicYearsContained)) {
-                    $this->academicYearsContained[] = $term['academicYear']['code'];
+                $this->termsContained[] = $term->termCode;
+                if (!in_array($term->academicYear->code, $this->academicYearsContained)) {
+                    $this->academicYearsContained[] = $term->academicYear->code;
                 }
-                if (!in_array($term['finaidProcYear']['code'], $this->financialAidProcessingYearsContained)) {
-                    $this->financialAidProcessingYearsContained[] = $term['finaidProcYear']['code'];
+                if (!in_array($term->finaidProcYear->code, $this->financialAidProcessingYearsContained)) {
+                    $this->financialAidProcessingYearsContained[] = $term->finaidProcYear->code;
                 }
             }
 
